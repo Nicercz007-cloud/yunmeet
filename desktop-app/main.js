@@ -480,6 +480,26 @@ function setupSmoke(win) {
           "})()"
         ).catch((e) => log('fake meet error:', e.message));
       }
+      // 真实建会流程复现：填名字→点创建→轮询内部状态，定位"卡在权限"到底是哪一步
+      if (process.env.YUNMEET_SMOKE_REAL) {
+        await win.webContents.executeJavaScript(
+          "document.getElementById('nameCreate').value='冒烟测试';" +
+          "document.getElementById('btnCreate').click();'clicked'"
+        ).catch((e) => log('real flow click failed:', e.message));
+        for (let i = 0; i < 8; i++) {
+          await new Promise((r) => setTimeout(r, 3000));
+          const st = await win.webContents.executeJavaScript(
+            "JSON.stringify({ov:document.getElementById('overlay').classList.contains('show')," +
+            "ovT:document.getElementById('ovTitle').textContent," +
+            "ovX:document.getElementById('ovText').textContent," +
+            "room:(typeof S!=='undefined'&&S.room)||''," +
+            "inMeet:(typeof S!=='undefined'&&S.inMeeting)||false," +
+            "mic:(typeof S!=='undefined'&&!!S.micTrack)||false," +
+            "peer:(typeof S!=='undefined'&&!!S.peer)||false})"
+          ).catch((e) => 'poll failed ' + e.message);
+          log('flow[' + i + ']:', st);
+        }
+      }
       // 页面状态诊断
       const state = await win.webContents.executeJavaScript(
         "JSON.stringify({home:document.getElementById('home').classList.contains('active')," +
