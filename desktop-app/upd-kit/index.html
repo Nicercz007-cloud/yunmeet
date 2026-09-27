@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>云聚 · Windows 版下载</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Microsoft YaHei", system-ui, sans-serif;
+    background: #101418; color: #e8eaf0;
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  }
+  .card { text-align: center; padding: 48px 40px; max-width: 560px; }
+  h1 { font-size: 28px; margin-bottom: 8px; }
+  h1 span { color: #f5b942; }
+  p.sub { color: #8b93a1; margin-bottom: 32px; font-size: 14px; }
+  a.dl {
+    display: inline-block; background: #2c6bed; color: #fff; text-decoration: none;
+    padding: 14px 40px; border-radius: 10px; font-size: 17px; font-weight: 600;
+  }
+  a.dl:hover { background: #3b7bff; }
+  ol { text-align: left; margin: 32px auto 0; color: #8b93a1; font-size: 13px; line-height: 2; max-width: 420px; }
+  .tip { margin-top: 24px; font-size: 12px; color: #5a6472; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>云聚<span> YunMeet</span> · Windows 版</h1>
+    <p class="sub">免注册 · 不限时 · 点对点直连的视频会议桌面软件，支持自动更新</p>
+    <a class="dl" href="YunMeet-Setup-1.0.0.exe" id="dl">下载 YunMeet-Setup-1.0.0.exe</a>
+    <ol>
+      <li>下载后双击安装（自动装到当前用户目录，无需管理员）</li>
+      <li>若 Windows 提示"已保护你的电脑"：点 <b>更多信息 → 仍要运行</b></li>
+      <li>装好后桌面图标双击即用；有新版本时软件会自动提示</li>
+    </ol>
+    <p class="tip">没有电脑也可以：手机/电脑浏览器打开本站同目录的 yunmeet.html 即可网页入会，会议号互通。</p>
+  </div>
+<script>
+  // 以后发新版只改这里和同目录的 exe 文件名（latest.yml 记得一起换）
+  var V = '1.0.0';
+  document.getElementById('dl').href = 'YunMeet-Setup-' + V + '.exe';
+  document.getElementById('dl').textContent = '下载 YunMeet-Setup-' + V + '.exe';
+</script>
+</body>
+</html>

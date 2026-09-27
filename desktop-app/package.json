@@ -1,0 +1,60 @@
+{
+  "name": "yunmeet-desktop",
+  "productName": "云聚",
+  "version": "1.0.0",
+  "description": "云聚会议桌面版 — 免注册、不限时的视频会议，基于 WebRTC 点对点直连",
+  "main": "main.js",
+  "author": "YunMeet",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win nsis"
+  },
+  "dependencies": {
+    "electron-updater": "^6.6.2"
+  },
+  "devDependencies": {
+    "electron": "^39.0.0",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "cloud.yunmeet.desktop",
+    "productName": "云聚",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "picker.html",
+      "build/icon.ico",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "../yunmeet.html",
+        "to": "yunmeet.html"
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "deleteAppDataOnUninstall": false,
+      "artifactName": "YunMeet-Setup-${version}.${ext}"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "Nicercz007-cloud",
+      "repo": "yunmeet"
+    }
+  }
+}
