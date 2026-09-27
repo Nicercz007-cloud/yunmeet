@@ -325,15 +325,28 @@ body.sharing .tile.focus video{object-fit:contain}  /* 投屏完整显示不裁�
   .panel{bottom:94px}
 }
 
-/* 移动端适配 */
+/* 移动端适配：会议页走腾讯会议式全屏布局 */
 @media (max-width:640px){
-  #tiles{grid-template-columns:repeat(auto-fit,minmax(145px,1fr))}
-  body.sharing #tiles{grid-template-columns:repeat(auto-fit,minmax(110px,1fr));
-    grid-template-rows:minmax(0,1fr) 96px}
-  .ctrlbar{gap:7px}
+  /* 顶栏悬浮在画面上，渐变过渡 */
+  .topbar{position:absolute;top:0;left:0;right:0;z-index:8;height:46px;
+    background:linear-gradient(rgba(9,12,18,.88),rgba(9,12,18,0));
+    border-bottom:none;padding:0 12px;gap:8px}
+  /* 舞台满屏、瓦片无缝 */
+  .stage{padding:0}
+  #tiles{gap:2px;grid-template-columns:repeat(2,1fr)}
+  .tile{border-radius:0;border:none}
+  /* 共享：画面占满，缩略条压底 */
+  body.sharing #tiles{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) 118px}
+  body.sharing .tile.focus{aspect-ratio:auto;width:100%;height:100%;border-radius:0;justify-self:stretch}
+  /* 工具栏：全宽底栏、大触点 */
+  .ctrlbar{height:60px;gap:6px;background:#10151F;border-top:1px solid #1D2534;padding:0 10px}
   .ctrl{width:42px;height:42px}
-  .topbar{gap:8px;padding:0 10px}
-  .chip .lbl{display:none}
+  .ctrl.hangup{height:42px;padding:0 16px}
+  /* 面板变底部抽屉 */
+  .panel{left:0;right:0;width:100%;bottom:60px;border-radius:14px 14px 0 0;max-height:62vh}
+  .sharechip{top:54px;right:10px}
+  .ctrl .tip{display:none}
+  /* 首页 */
   .brandbar{padding:16px 20px}
   .hero{margin-bottom:26px}
 }

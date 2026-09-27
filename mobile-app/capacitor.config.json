@@ -2,10 +2,6 @@
   "appId": "cloud.yunmeet.app",
   "appName": "云聚",
   "webDir": "www",
-  "server": {
-    "url": "https://nicercz007-cloud.github.io/yunmeet/yunmeet.html",
-    "cleartext": false
-  },
   "android": {
     "allowMixedContent": false
   }
