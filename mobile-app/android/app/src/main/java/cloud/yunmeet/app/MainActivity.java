@@ -20,6 +20,10 @@ public class MainActivity extends BridgeActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // 允许 WebView 自动播放远端音视频：否则对方共享的画面在手机上可能一直黑屏
+        if (this.bridge != null && this.bridge.getWebView() != null) {
+            this.bridge.getWebView().getSettings().setMediaPlaybackRequiresUserGesture(false);
+        }
         // WebView 的 WebRTC 只在"安卓运行时权限已授予"时才放行 getUserMedia，
         // 但它自己不会拉起系统授权弹窗 —— 所以进 App 就先把权限要到手。
         ensureMediaPermissions();

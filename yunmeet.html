@@ -528,12 +528,12 @@ body.sharing .tile.focus video{object-fit:contain}  /* 投屏完整显示不裁�
 
 /* ================= 常量与状态 ================= */
 const NS = 'yunmeet-v4-';
-const APP_VERSION = 'v4.2';
+const APP_VERSION = 'v4.3';
 /* 投屏画质档位（嫌卡就调低，带宽好想更清晰就调高） */
-const SHARE_MAX_W = 1280, SHARE_MAX_H = 720;   // 采集分辨率上限：720P 对 PPT/文档足够，编码负担小
+const SHARE_MAX_W = 1920, SHARE_MAX_H = 1080;  // 1080P：手机上看 PPT/代码文字明显更清楚
 const SHARE_FPS = 15;                          // 文档画面 15 帧足够顺滑
-const SHARE_BITRATE = 3000000;                 // 直连时码率上限
-const SHARE_BITRATE_RELAY = 1500000;           // 走中继时自动降档防拥堵
+const SHARE_BITRATE = 6000000;                 // 直连时码率上限（1080P 文字锐利）
+const SHARE_BITRATE_RELAY = 2500000;           // 走中继时自动降档防拥堵
 const hostIdOf = r => NS + r + '-host';
 const partIdOf = r => NS + r + '-u' + Math.random().toString(36).slice(2, 10);
 
@@ -710,14 +710,17 @@ window.addEventListener('DOMContentLoaded', () => {
 /* ================= 发起会议（主持人） ================= */
 async function createMeeting(name) {
   $('btnCreate').disabled = true;
-  showOverlay('正在创建会议…', '正在请求摄像头和麦克风权限', '');
+  showOverlay('正在创建会议…', '正在连接麦克风，摄像头稍后手动开启', '');
   try {
-    await acquireMedia();
+    await acquireMedia(false);
   } catch (e) {
     toast('本机无法提供任何音视频轨道，无法进入会议', 'amber');
     resetHome(); return;
   }
   S.role = 'host'; S.myName = name;
+  S.camOff = true;
+  if (S.camTrack) S.camTrack.enabled = false;
+  toast('已关闭摄像头入会，点底部相机图标可开启');
   let opened = false;
   for (let attempt = 0; attempt < 3; attempt++) {
     S.room = String(Math.floor(100000 + Math.random() * 900000));
@@ -730,7 +733,7 @@ async function createMeeting(name) {
     if (ok) { opened = true; break; }
   }
   if (!opened) { failJoin('创建失败', '会议号多次被占用，请稍后重试。'); return; }
-  S.members[S.myId] = { name: S.myName, isHost: true, muted: false, camOff: false };
+  S.members[S.myId] = { name: S.myName, isHost: true, muted: false, camOff: S.camOff };
   enterMeeting();
 }
 async function joinMeeting(name, code, wantCam = true) {
@@ -1238,10 +1241,11 @@ async function swapSenderTrack(kind, track) {
    投屏 = 保分辨率、高码率（文字清晰优先，允许降帧）
    摄像头 = 平衡模式；上限随 S.vidCap 自适应（网络变差自动降码率保流畅） */
 async function tuneSenders(isScreen) {
-  let screenBitrate = Math.min(SHARE_BITRATE, S.vidCap);
+  /* 共享码率不再被摄像头自适应上限钳死：保底 3M（中继 2M），否则手机上看文档发糊 */
+  let screenBitrate = Math.min(SHARE_BITRATE, Math.max(S.vidCap, 3000000));
   let camBitrate    = Math.min(1500000, S.vidCap);
   if (S.usingRelay) {
-    screenBitrate = Math.min(SHARE_BITRATE_RELAY, S.vidCap);
+    screenBitrate = Math.min(SHARE_BITRATE_RELAY, Math.max(S.vidCap, 2000000));
     camBitrate    = Math.min(800000, S.vidCap);
   }
   for (const pid in S.calls) {
